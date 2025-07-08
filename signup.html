@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>إنشاء حساب جديد</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- مكتبات CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    rel="stylesheet"
+  />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    rel="stylesheet"
+  />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap");
+
+    body,
+    html {
+      margin: 0;
+      height: 100%;
+      font-family: "Cairo", sans-serif;
+      background: linear-gradient(
+        -45deg,
+        #e0f7fa,
+        #f3e5f5,
+        #d6e4f0,
+        #e8f5e9
+      );
+      background-size: 400% 400%;
+      animation: bgMove 12s ease infinite;
+      overflow: hidden;
+      position: relative;
+    }
+    @keyframes bgMove {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .glow-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(
+        circle,
+        rgba(33, 150, 243, 0.2),
+        transparent 70%
+      );
+      filter: blur(100px);
+      transform: translate(-50%, -50%);
+      animation: glowPulse 6s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+    @keyframes glowPulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.3);
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-box {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      padding: 30px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: scale(0.8);
+      animation: intro 1s ease-out forwards;
+      position: relative;
+    }
+    @keyframes intro {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(30px);
+        filter: blur(5px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+      }
+    }
+    .form-box:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    }
+    h3 {
+      text-align: center;
+      margin-bottom: 25px;
+      animation: typing 2s steps(20, end), blink 0.7s infinite;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid;
+    }
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
+    }
+    @keyframes blink {
+      50% {
+        border-color: transparent;
+      }
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #00bcd4;
+    }
+    .btn-primary {
+      background: linear-gradient(to right, #00bcd4, #2196f3);
+      border: none;
+      font-weight: bold;
+      animation: pulseBtn 2s infinite;
+    }
+    @keyframes pulseBtn {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 15px #00bcd4;
+    }
+    .links {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .links a {
+      display: inline-block;
+      margin: 5px;
+      color: #2196f3;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .links a:hover {
+      text-decoration: underline;
+      transform: scale(1.05);
+    }
+
+    /* إشعار التنبيه داخل الصفحة */
+    #alertBox {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f8d7da;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 600;
+      display: none;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* زر إظهار كلمة المرور */
+    .input-group-text {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <div class="container">
+    <div
+      class="form-box tilt"
+      data-tilt
+      data-tilt-glare
+      data-tilt-max-glare="0.4"
+      style="position: relative;"
+    >
+      <h3>إنشاء حساب جديد</h3>
+      <div class="mb-3">
+        <label class="form-label">اسم المستخدم</label>
+        <input
+          type="text"
+          id="u"
+          class="form-control"
+          placeholder="أدخل اسم المستخدم"
+          autocomplete="username"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">كلمة المرور</label>
+        <div class="input-group">
+          <input
+            type="password"
+            id="p"
+            class="form-control"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+          <span class="input-group-text" id="togglePassword"
+            ><i class="bi bi-eye"></i
+          ></span>
+        </div>
+      </div>
+      <button class="btn btn-primary w-100" onclick="signup()">
+        تسجيل
+      </button>
+      <div class="links">
+<a href="login.html" onclick="navigate(event, 'login.html')">لديك حساب؟</a>
+<a href="forgot.html" onclick="navigate(event, 'forgot.html')">نسيت كلمة المرور؟</a>
+
+          >نسيت كلمة المرور؟</a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div id="alertBox"></div>
+
+ <script>
+  document.getElementById("togglePassword").addEventListener("click", function () {
+    const passInput = document.getElementById("p");
+    const icon = this.querySelector("i");
+    if (passInput.type === "password") {
+      passInput.type = "text";
+      icon.classList.remove("bi-eye");
+      icon.classList.add("bi-eye-slash");
+    } else {
+      passInput.type = "password";
+      icon.classList.remove("bi-eye-slash");
+      icon.classList.add("bi-eye");
+    }
+  });
+
+  // تسجيل الحساب الجديد
+  function signup() {
+    const username = document.getElementById("u").value.trim();
+    const password = document.getElementById("p").value;
+
+    // التحقق من الإدخال
+    if (!username || !password) {
+      showAlert("يرجى إدخال اسم المستخدم وكلمة المرور");
+      return;
+    }
+
+    // حفظ البيانات في localStorage
+    const user = { username, password };
+localStorage.setItem("user", JSON.stringify({ username, password }));
+
+    // الانتقال إلى صفحة تسجيل الدخول
+    window.location.href = "login.html";
+  }
+
+  // عرض إشعار تنبيهي
+  function showAlert(message) {
+    const alertBox = document.getElementById("alertBox");
+    alertBox.textContent = message;
+    alertBox.style.display = "block";
+    setTimeout(() => {
+      alertBox.style.display = "none";
+    }, 3000);
+  }
+
+  // منع التنقل العادي عند الضغط على الروابط
+  function navigate(event, url) {
+    event.preventDefault();
+    window.location.href = url;
+  }
+</script>
+
+  

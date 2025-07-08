@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>لوحة الطالب</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap');
+
+    :root {
+      --bg1: #F3EAFA;
+      --bg2: #E6D6FA;
+      --bg3: #DB88FF;
+      --bg4: #C463FF;
+      --bg5: #FB3FFF;
+      --text-color: #111;
+      --sidebar-bg: #f5effa;
+      --sidebar-text: #333;
+      --card-bg: rgba(255, 255, 255, 0.2);
+      --border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    body.dark-mode {
+      --bg1: #00010D;
+      --bg2: #010326;
+      --bg3: #2D0140;
+      --bg4: #660273;
+      --bg5: #A305A6;
+      --text-color: #f1f1f1;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      background: linear-gradient(-45deg, var(--bg1), var(--bg2), var(--bg3), var(--bg4), var(--bg5));
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+      overflow-x: hidden;
+      color: var(--text-color);
+    }
+
+    @keyframes gradientMove {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .sidebar {
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 25px;
+      min-height: 100vh;
+    }
+
+    .sidebar h4 {
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: bold;
+      color: var(--sidebar-text);
+    }
+
+    .sidebar a {
+      display: block;
+      color: var(--sidebar-text);
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .sidebar a:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+      color: var(--text-color);
+      transform: scale(1.02);
+    }
+
+    .card.glass {
+      backdrop-filter: blur(10px);
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: 0.4s;
+      transform-style: preserve-3d;
+    }
+
+    .card.glass:hover {
+      transform: perspective(600px) rotateX(3deg) rotateY(-3deg) scale(1.02);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .icon-box {
+      width: 50px;
+      height: 50px;
+      background: #dee2f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-left: 15px;
+    }
+
+    .btn {
+      border-radius: 12px;
+    }
+
+    #studentName {
+      animation: fadeInDown 1s ease-in-out;
+    }
+
+    @keyframes fadeInDown {
+      from {opacity: 0; transform: translateY(-30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .progress-bar {
+      transition: width 1.5s ease-in-out;
+    }
+
+    .section {
+      display: none;
+      animation: fadeInSection 0.5s ease forwards;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeInSection {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .mode-toggle {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 999;
+      background: transparent;
+      border: 2px solid var(--text-color);
+      color: var(--text-color);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+    .menu-toggle {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 1001;
+      font-size: 24px;
+      background: var(--bg3);
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        right: -250px;
+        width: 250px;
+        height: 100%;
+        background: var(--sidebar-bg);
+        box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+        transition: right 0.3s ease;
+        z-index: 1000;
+      }
+
+      .sidebar.active {
+        right: 0;
+      }
+
+      .col-md-3.sidebar {
+        min-height: auto;
+      }
+
+      .col-md-9 {
+        width: 100%;
+      }
+    }
+    #alertBox {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #d1e7dd;
+      color: #0f5132;
+      border: 1px solid #badbcc;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-weight: 600;
+      display: none;
+      z-index: 1050;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      min-width: 250px;
+      text-align: center;
+    }
+
+    #alertBox.error {
+      background-color: #f8d7da;
+      color: #842029;
+      border-color: #f5c2c7;
+    }
+
+    body, h1, h2, h3, h4, h5, h6, p, label, .form-label, .sidebar a, .card {
+      color: var(--text-color);
+    }
+  </style>
+</head>
+<body>
+<button class="mode-toggle" onclick="toggleMode()">🌓</button>
+<button class="menu-toggle d-md-none" onclick="toggleSidebar()">☰</button>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3 sidebar">
+      <h4>لوحة الطالب</h4>
+      <a onclick="swap('home')"><i class="bi bi-house"></i> الرئيسية</a>
+      <a onclick="swap('courses')"><i class="bi bi-journal-bookmark"></i> كورساتي</a>
+      <a onclick="swap('attendance')"><i class="bi bi-calendar-check"></i> الحضور والغياب</a>
+      <a onclick="swap('profile')"><i class="bi bi-person-circle"></i> معلومات الطالب</a>
+      <a onclick="swap('settings')"><i class="bi bi-gear"></i> الإعدادات</a>
+      <a onclick="logout()"><i class="bi bi-box-arrow-right"></i> تسجيل الخروج</a>
+    </div>
+    <div class="col-md-9 p-4">
+ <h3 id="studentName" class="mb-4 text-center fw-bold fs-3">مرحبًا 👋</h3>
+      <div id="home" class="section active">
+        <div class="card glass p-4 tilt" data-tilt data-aos="fade-up">
+          <div class="d-flex align-items-center mb-3">
+            <div class="icon-box"><i class="bi bi-lightbulb fs-4 text-warning"></i></div>
+            <h5 class="mb-0">عن كورسات الرياضة</h5>
+          </div>
+          <p class="mb-2">
+            نقدم في مستر رياضة كورسات احترافية تغطي كافة جوانب مادة الرياضيات للثانوية العامة والجامعات، منها:
+          </p>
+          <ul>
+            <li>كورس الشرح التفصيلي لجميع الفروع</li>
+            <li>كورس حل النماذج الوزارية</li>
+            <li>كورس المراجعة النهائية</li>
+            <li>تدريبات على كل درس</li>
+          </ul>
+          <p>📌 جميع الكورسات مدعومة بفيديوهات، ملخصات، واختبارات تفاعلية.</p>
+        </div>
+      </div>
+      <div id="courses" class="section">
+        <div class="row g-4">
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card glass p-3 tilt" data-tilt>
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-box"><i class="bi bi-book fs-4 text-primary"></i></div>
+                <h5 class="mb-0">كورسات السنة الدراسية</h5>
+              </div>
+              <div id="yearCourses"></div>
+            </div>
+          </div>
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="card glass p-3 tilt" data-tilt>
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-box"><i class="bi bi-person-video3 fs-4 text-success"></i></div>
+                <h5 class="mb-0">الكورسات المشترك فيها</h5>
+              </div>
+              <div id="subscribedCourses"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="attendance" class="section">
+        <div class="row g-4">
+          <div class="col-md-6" data-aos="fade-up">
+            <div class="card glass p-4 tilt" data-tilt>
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-box"><i class="bi bi-check2-circle fs-4 text-success"></i></div>
+                <h5 class="mb-0">نسبة الحضور</h5>
+              </div>
+              <p class="fs-5">✅ تم الحضور: <strong>0%</strong></p>
+            </div>
+          </div>
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card glass p-4 tilt" data-tilt>
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-box"><i class="bi bi-x-circle fs-4 text-danger"></i></div>
+                <h5 class="mb-0">نسبة الغياب</h5>
+              </div>
+              <p class="fs-5">❌ تم الغياب: <strong>0%</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="profile" class="section">
+        <div class="card glass p-4 tilt" data-tilt data-aos="fade-up">
+          <div class="d-flex align-items-center mb-3">
+            <div class="icon-box"><i class="bi bi-person-badge fs-4 text-primary"></i></div>
+            <h5 class="mb-0">معلومات الطالب</h5>
+          </div>
+          <form id="profileForm">
+            <div class="mb-3">
+              <label for="studentNameInput" class="form-label">الاسم</label>
+              <input type="text" class="form-control" id="studentNameInput" required />
+            </div>
+            <div class="mb-3">
+              <label for="studentAgeInput" class="form-label">العمر</label>
+              <input type="number" class="form-control" id="studentAgeInput" min="1" required />
+            </div>
+            <div class="mb-3">
+              <label for="studentEmailInput" class="form-label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" id="studentEmailInput" required />
+            </div>
+            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+          </form>
+        </div>
+      </div>
+      <div id="settings" class="section">
+        <div class="row g-4">
+          <div class="col-md-6" data-aos="fade-up">
+            <div class="card glass p-4 tilt" data-tilt>
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-box"><i class="bi bi-pencil-square fs-4 text-info"></i></div>
+                <h5 class="mb-0">تعديل البيانات</h5>
+              </div>
+              <p class="fs-6">✏️ يمكنك تعديل بياناتك مثل الاسم أو البريد الإلكتروني.</p>
+              <button onclick="swap('profile')" class="btn btn-outline-info">تعديل البيانات</button>
+            </div>
+          </div>
+          <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="card glass p-4 tilt" data-tilt>
+              <div class="d-flex align-items-center mb-3">
+                <div class="icon-box"><i class="bi bi-shield-lock fs-4 text-warning"></i></div>
+                <h5 class="mb-0">تغيير كلمة المرور</h5>
+              </div>
+              <p class="fs-6">🔐 قم بتغيير كلمة المرور بطريقة آمنة.</p>
+              <button class="btn btn-outline-warning" onclick="showAlert('صفحة تغيير كلمة المرور غير متوفرة الآن', false)">تغيير كلمة المرور</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="alertBox"></div>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.3/vanilla-tilt.min.js"></script>
+
+<script>
+  AOS.init();
+  VanillaTilt.init(document.querySelectorAll(".tilt"), { max: 10, speed: 400 });
+
+  const students = {
+    student1: {
+      name: "محمد علي",
+      age: 19,
+      email: "mohamed.ali@example.com",
+      yearCourses: ["رياضيات", "فيزياء", "ميكانيكا"],
+      subscribedCourses: ["كورس حل نماذج", "مراجعة نهائية"],
+    },
+    student2: {
+      name: "سارة محمود",
+      age: 21,
+      email: "sara.mahmoud@example.com",
+      yearCourses: ["إحصاء", "جبر", "هندسة"],
+      subscribedCourses: ["جبر مكثف", "حل تمارين"],
+    }
+  };
+  const studentId = localStorage.getItem("student");
+  if (!studentId || !students[studentId]) {
+    document.getElementById("studentName").innerText = "مرحبًا 👋";
+  } else {
+    const student = students[studentId];
+    document.getElementById("studentName").innerText = `مرحبًا، ${student.name} 👋`;
+    document.getElementById("yearCourses").innerHTML =
+      "<ul>" + student.yearCourses.map(c => `<li>${c}</li>`).join('') + "</ul>";
+    document.getElementById("subscribedCourses").innerHTML =
+      "<ul>" + student.subscribedCourses.map(c => `<li>${c}</li>`).join('') + "</ul>";
+
+    document.getElementById("studentNameInput").value = student.name;
+    document.getElementById("studentAgeInput").value = student.age || '';
+    document.getElementById("studentEmailInput").value = student.email || '';
+  }
+
+  const alertBox = document.getElementById('alertBox');
+  let alertTimeout;
+
+  function showAlert(message, isSuccess = true) {
+    clearTimeout(alertTimeout);
+    alertBox.textContent = message;
+    alertBox.className = isSuccess ? '' : 'error';
+    alertBox.style.display = 'block';
+    alertTimeout = setTimeout(() => {
+      alertBox.style.display = 'none';
+    }, 3000);
+  }
+
+  document.getElementById("profileForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const newName = document.getElementById("studentNameInput").value.trim();
+    const newAge = parseInt(document.getElementById("studentAgeInput").value);
+    const newEmail = document.getElementById("studentEmailInput").value.trim();
+
+    if (!newName || !newAge || !newEmail) {
+      showAlert("يرجى ملء جميع الحقول بشكل صحيح.", false);
+      return;
+    }
+
+    students[studentId].name = newName;
+    students[studentId].age = newAge;
+    students[studentId].email = newEmail;
+
+    document.getElementById("studentName").innerText = `مرحبًا، ${newName} 👋`;
+    showAlert("تم حفظ التغييرات بنجاح!");
+  });
+
+  function swap(sectionId) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.classList.add('active');
+      AOS.refresh();
+    }
+    document.querySelector(".sidebar").classList.remove("active");
+  }
+
+  function logout() {
+    localStorage.removeItem("student");
+    location.reload();
+  }
+
+  function toggleMode() {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+  }
+
+  window.onload = () => {
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+  }
+
+  function toggleSidebar() {
+    document.querySelector(".sidebar").classList.toggle("active");
+  }
+</script>
+
+</body>
+</html>
